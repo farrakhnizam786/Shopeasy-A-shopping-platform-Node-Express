@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopEasy | Super Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:         #080810;
+            --sidebar:    #0d0a14;
+            --surface:    #110e1c;
+            --surface2:   #16121f;
+            --border:     rgba(220,38,38,.12);
+            --red:        #dc2626;
+            --red-light:  #fca5a5;
+            --red-dark:   #991b1b;
+            --gold:       #eab308;
+            --gold-light: #fde047;
+            --success:    #10b981;
+            --danger:     #ef4444;
+            --text:       #f9fafb;
+            --text-muted: #9ca3af;
+            --text-faint: #4b5563;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* ─── SIDEBAR ─── */
+        .sidebar {
+            width: 250px;
+            flex-shrink: 0;
+            background: var(--sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-brand {
+            padding: 24px 20px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .brand-shield {
+            width: 40px; height: 40px; border-radius: 12px;
+            background: linear-gradient(135deg, var(--red), var(--red-dark));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; margin-bottom: 10px;
+            box-shadow: 0 4px 16px rgba(220,38,38,.4);
+        }
+        .brand-title {
+            font-size: .85rem; font-weight: 900; letter-spacing: -0.3px;
+            background: linear-gradient(135deg, var(--red-light), var(--gold-light));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .brand-sub { font-size: 10px; color: var(--text-faint); font-weight: 700; letter-spacing: 1px; margin-top: 2px; }
+
+        .sidebar-section { font-size: 10px; font-weight: 700; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.8px; padding: 18px 20px 8px; }
+
+        .sidebar-nav { display: flex; flex-direction: column; gap: 3px; padding: 0 10px; }
+        .nav-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 12px; border-radius: 10px;
+            color: var(--text-muted); font-size: 13.5px; font-weight: 600;
+            text-decoration: none; cursor: pointer; transition: all .2s;
+        }
+        .nav-item:hover { background: var(--surface2); color: var(--text); }
+        .nav-item.active { background: rgba(220,38,38,.15); color: var(--red-light); }
+
+        .sidebar-footer {
+            margin-top: auto; padding: 16px 10px;
+            border-top: 1px solid var(--border);
+        }
+        .sidebar-footer a { color: var(--danger); }
+        .sidebar-footer a:hover { background: rgba(239,68,68,.1); color: #f87171; }
+
+        /* ─── MAIN ─── */
+        .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
+        .main::before {
+            content: '';
+            position: fixed; inset: 0;
+            background:
+                radial-gradient(ellipse 55% 35% at 80% 0%, rgba(220,38,38,.08) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 30% at 0% 100%, rgba(234,179,8,.06) 0%, transparent 55%);
+            pointer-events: none; z-index: 0;
+        }
+
+        /* ─── TOPBAR ─── */
+        .topbar {
+            position: sticky; top: 0; z-index: 100;
+            padding: 0 32px; height: 64px;
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(8,8,16,.85); backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+        }
+        .topbar-left h1 { font-size: 1.1rem; font-weight: 900; }
+        .topbar-left p { font-size: 12px; color: var(--text-faint); margin-top: 2px; }
+        .topbar-right { display: flex; align-items: center; gap: 10px; }
+        .top-badge {
+            display: flex; align-items: center; gap: 7px;
+            background: rgba(220,38,38,.1); border: 1px solid rgba(220,38,38,.2);
+            border-radius: 10px; padding: 7px 14px;
+            font-size: 12px; font-weight: 700; color: var(--red-light);
+        }
+        .top-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.4; } }
+
+        /* ─── CONTENT ─── */
+        .content { padding: 28px 32px; overflow-y: auto; flex: 1; position: relative; z-index: 1; }
+
+        /* ─── ALERTS ─── */
+        .alert {
+            padding: 12px 18px; border-radius: 12px;
+            font-size: 13px; font-weight: 600; margin-bottom: 20px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .alert-success { background: rgba(16,185,129,.12); border: 1px solid rgba(16,185,129,.25); color: #6ee7b7; }
+        .alert-error   { background: rgba(239,68,68,.12);  border: 1px solid rgba(239,68,68,.25);  color: #fca5a5; }
+
+        /* ─── STATS GRID ─── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px; margin-bottom: 28px;
+        }
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 18px; padding: 20px;
+            display: flex; flex-direction: column; gap: 10px;
+            position: relative; overflow: hidden;
+            transition: transform .25s, border-color .25s;
+        }
+        .stat-card:hover { transform: translateY(-4px); border-color: rgba(220,38,38,.3); }
+        .stat-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: var(--stat-accent, var(--red));
+            border-radius: 18px 18px 0 0;
+        }
+        .stat-icon { font-size: 1.4rem; width: 42px; height: 42px; background: rgba(255,255,255,.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        .stat-num  { font-size: 2rem; font-weight: 900; line-height: 1; }
+        .stat-label{ font-size: 12px; color: var(--text-faint); font-weight: 600; }
+
+        /* ─── PANEL ─── */
+        .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; margin-bottom: 28px; }
+        .panel-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+        .panel-header h3 { font-size: .95rem; font-weight: 800; }
+        .panel-body { padding: 20px; }
+
+        /* ─── FORM ─── */
+        .form-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: end; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-label { font-size: 11.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-input {
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(220,38,38,.15);
+            border-radius: 11px; padding: 11px 14px;
+            color: var(--text); font-size: 14px; font-family: 'Inter', sans-serif;
+            transition: border-color .2s, box-shadow .2s; outline: none; width: 100%;
+        }
+        .form-input:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(220,38,38,.15); }
+        .form-input::placeholder { color: var(--text-faint); }
+
+        .btn-create {
+            background: linear-gradient(135deg, var(--red), var(--red-dark));
+            color: #fff; border: none; border-radius: 11px;
+            padding: 11px 20px; font-size: 14px; font-weight: 700;
+            font-family: 'Inter', sans-serif; cursor: pointer;
+            box-shadow: 0 4px 14px rgba(220,38,38,.4);
+            transition: transform .2s, box-shadow .2s;
+            white-space: nowrap;
+        }
+        .btn-create:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(220,38,38,.55); }
+
+        /* ─── TABLE ─── */
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 420px; }
+        thead tr { border-bottom: 1px solid var(--border); }
+        th { padding: 11px 14px; text-align: left; font-size: 11px; font-weight: 700; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.6px; white-space: nowrap; }
+        tbody tr { border-bottom: 1px solid var(--border); transition: background .18s; }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: rgba(255,255,255,.02); }
+        td { padding: 13px 14px; font-size: 13.5px; color: var(--text-muted); vertical-align: middle; }
+        td:first-child { color: var(--text); font-weight: 600; }
+
+        .role-badge {
+            display: inline-flex; align-items: center;
+            background: rgba(220,38,38,.12); border: 1px solid rgba(220,38,38,.25);
+            color: var(--red-light); font-size: 11px; font-weight: 700;
+            padding: 3px 10px; border-radius: 100px;
+        }
+
+        .btn-del {
+            background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.25);
+            color: #f87171; font-size: 12px; font-weight: 700; font-family: 'Inter', sans-serif;
+            padding: 6px 14px; border-radius: 8px; cursor: pointer;
+            transition: all .2s; display: inline-flex; align-items: center; gap: 5px;
+        }
+        .btn-del:hover { background: rgba(239,68,68,.25); border-color: #ef4444; transform: translateY(-1px); }
+
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-faint); font-size: 14px; }
+        .empty-state span { display: block; font-size: 2.5rem; margin-bottom: 10px; opacity: .4; }
+
+        /* ─── SCROLLBAR ─── */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(220,38,38,.2); border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<!-- ════ SIDEBAR ════ -->
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-shield">🛡️</div>
+        <div class="brand-title">ShopEasy</div>
+        <div class="brand-sub">SUPER ADMIN</div>
+    </div>
+
+    <div class="sidebar-section">Control</div>
+    <nav class="sidebar-nav">
+        <a href="/superadmin/dashboard" class="nav-item active">
+            <span>👑</span> Dashboard
+        </a>
+        <a href="/" class="nav-item" target="_blank">
+            <span>🛍️</span> View Shop
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a href="/superadmin/logout" class="nav-item">
+            <span>🚪</span> Logout
+        </a>
+    </div>
+</aside>
+
+<!-- ════ MAIN ════ -->
+<div class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <h1>👑 Super Admin Control Center</h1>
+            <p>Full platform oversight and administrator management</p>
+        </div>
+        <div class="topbar-right">
+            <div class="top-badge">
+                <span class="dot"></span>
+                <span>Super Admin Active</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+        <!-- Alerts -->
+        <% const msg = (typeof query !== 'undefined' && query) ? query : null; %>
+        <% if (locals.successMsg) { %>
+        <div class="alert alert-success">✅ <%= successMsg %></div>
+        <% } %>
+        <% if (locals.errorMsg) { %>
+        <div class="alert alert-error">⚠️ <%= errorMsg %></div>
+        <% } %>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card" style="--stat-accent:#dc2626">
+                <div class="stat-icon">🛡️</div>
+                <div class="stat-num"><%= adminUsers.length %></div>
+                <div class="stat-label">Total Admins</div>
+            </div>
+            <div class="stat-card" style="--stat-accent:#eab308">
+                <div class="stat-icon">📦</div>
+                <div class="stat-num"><%= productCount %></div>
+                <div class="stat-label">Total Products</div>
+            </div>
+            <div class="stat-card" style="--stat-accent:#10b981">
+                <div class="stat-icon">👥</div>
+                <div class="stat-num"><%= customerCount %></div>
+                <div class="stat-label">Customers</div>
+            </div>
+            <div class="stat-card" style="--stat-accent:#0ea5e9">
+                <div class="stat-icon">💰</div>
+                <div class="stat-num">₹<%= totalValue.toLocaleString('en-IN') %></div>
+                <div class="stat-label">Shop Total Value</div>
+            </div>
+            <div class="stat-card" style="--stat-accent:#8b5cf6">
+                <div class="stat-icon">🗂️</div>
+                <div class="stat-num"><%= categories %></div>
+                <div class="stat-label">Categories Active</div>
+            </div>
+        </div>
+
+        <!-- Create Admin -->
+        <div class="panel">
+            <div class="panel-header">
+                <span>➕</span>
+                <h3>Create New Admin Account</h3>
+            </div>
+            <div class="panel-body">
+                <form action="/superadmin/create-admin" method="POST">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Admin Email</label>
+                            <input type="email" name="email" class="form-input" placeholder="admin@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="password" class="form-input" placeholder="Secure password" required minlength="6">
+                        </div>
+                        <button type="submit" class="btn-create">➕ Create Admin</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Admin List -->
+        <div class="panel">
+            <div class="panel-header">
+                <span>🛡️</span>
+                <h3>Manage Administrators <span style="font-size:.8rem; color:var(--text-faint); font-weight:600; margin-left:8px;">(<%= adminUsers.length %> total)</span></h3>
+            </div>
+            <div class="table-wrap">
+                <% if (adminUsers.length === 0) { %>
+                <div class="empty-state">
+                    <span>🛡️</span>
+                    No admin accounts yet. Create one above!
+                </div>
+                <% } else { %>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Created</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% adminUsers.forEach(function(admin, idx) { %>
+                        <tr>
+                            <td><%= idx + 1 %></td>
+                            <td><%= admin.email %></td>
+                            <td><span class="role-badge">🛡️ Admin</span></td>
+                            <td><%= admin.createdAt ? new Date(admin.createdAt).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : '—' %></td>
+                            <td>
+                                <form action="/superadmin/delete-admin/<%= admin._id %>" method="POST"
+                                      onsubmit="return confirm('Delete admin ' + '<%= admin.email %>' + '? This cannot be undone.')">
+                                    <button type="submit" class="btn-del">🗑️ Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+                <% } %>
+            </div>
+        </div>
+
+    </div><!-- /content -->
+</div><!-- /main -->
+
+</body>
+</html>
