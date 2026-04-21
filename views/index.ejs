@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopEasy | Welcome</title>
+    <meta name="description" content="ShopEasy — your premium online store. Login as Customer or Admin to continue.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: #0f0f1a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ── Background mesh ── */
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background:
+                radial-gradient(ellipse 70% 55% at 10% 5%,  rgba(124,58,237,.22) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 45% at 90% 95%, rgba(14,165,233,.18) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 55% 50%, rgba(236,72,153,.08) 0%, transparent 60%);
+            pointer-events: none; z-index: 0;
+        }
+
+        /* ── Floating orbs ── */
+        .orb {
+            position: fixed; border-radius: 50%;
+            filter: blur(90px); opacity: 0.16;
+            animation: floatOrb 10s ease-in-out infinite;
+            pointer-events: none; z-index: 0;
+        }
+        .orb1 { width: 480px; height: 480px; background: #7c3aed; top: -160px; left: -100px; }
+        .orb2 { width: 360px; height: 360px; background: #0ea5e9; bottom: -120px; right: -80px; animation-delay: -5s; }
+        .orb3 { width: 240px; height: 240px; background: #ec4899; top: 40%; left: 60%; animation-delay: -2.5s; }
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0,0) scale(1); }
+            33%       { transform: translate(20px, -30px) scale(1.06); }
+            66%       { transform: translate(-15px, 20px) scale(0.96); }
+        }
+
+        /* ── Animated grid dots ── */
+        .grid-bg {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background-image: radial-gradient(rgba(255,255,255,.045) 1px, transparent 1px);
+            background-size: 36px 36px;
+        }
+
+        /* ── Wrapper ── */
+        .wrapper {
+            position: relative; z-index: 1;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 24px 20px;
+            width: 100%;
+        }
+
+        /* ── Logo / Brand ── */
+        .brand {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 48px;
+            animation: fadeDown .6s ease both;
+        }
+        .brand-icon {
+            width: 48px; height: 48px;
+            background: linear-gradient(135deg, #7c3aed, #0ea5e9);
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 24px rgba(124,58,237,.4);
+        }
+        .brand-name {
+            font-size: 1.8rem; font-weight: 900; letter-spacing: -1px;
+            background: linear-gradient(135deg, #a78bfa, #60a5fa);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        @keyframes fadeDown { from { opacity:0; transform:translateY(-18px); } to { opacity:1; transform:none; } }
+
+        /* ── Heading ── */
+        .heading {
+            text-align: center;
+            margin-bottom: 48px;
+            animation: fadeUp .6s .1s ease both;
+        }
+        .heading h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 900; letter-spacing: -1.5px; line-height: 1.1;
+            background: linear-gradient(135deg, #f1f5f9 20%, #a78bfa 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            margin-bottom: 14px;
+        }
+        .heading p {
+            color: #64748b; font-size: 1rem; max-width: 380px; margin: 0 auto; line-height: 1.65;
+        }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+
+        /* ── Cards grid ── */
+        .cards {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 340px;
+            animation: fadeUp .6s .2s ease both;
+        }
+
+        .choice-card {
+            background: rgba(26,26,46,.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 22px;
+            padding: 32px 24px 28px;
+            display: flex; flex-direction: column; align-items: center; gap: 14px;
+            text-decoration: none;
+            position: relative; overflow: hidden;
+            transition: transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s, border-color .3s;
+            cursor: pointer;
+        }
+        .choice-card::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: var(--card-glow);
+            opacity: 0; transition: opacity .35s;
+        }
+        .choice-card:hover { transform: translateY(-8px); }
+        .choice-card:hover::before { opacity: 1; }
+
+        /* Customer card */
+        .card-customer {
+            --card-glow: linear-gradient(135deg, rgba(14,165,233,.1), transparent);
+            box-shadow: 0 2px 20px rgba(0,0,0,.3);
+        }
+        .card-customer:hover {
+            border-color: rgba(14,165,233,.45);
+            box-shadow: 0 20px 48px rgba(14,165,233,.2);
+        }
+
+        /* Admin card */
+        .card-admin {
+            --card-glow: linear-gradient(135deg, rgba(124,58,237,.1), transparent);
+            box-shadow: 0 2px 20px rgba(0,0,0,.3);
+        }
+        .card-admin:hover {
+            border-color: rgba(124,58,237,.45);
+            box-shadow: 0 20px 48px rgba(124,58,237,.2);
+        }
+
+        /* Top accent line on card */
+        .card-accent {
+            position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 22px 22px 0 0;
+        }
+        .card-customer .card-accent { background: linear-gradient(90deg, #0ea5e9, #38bdf8); }
+        .card-admin    .card-accent { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+
+        .card-icon {
+            width: 68px; height: 68px; border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem;
+            transition: transform .3s cubic-bezier(.22,1,.36,1);
+        }
+        .card-customer .card-icon { background: linear-gradient(135deg, #0ea5e9, #0284c7); box-shadow: 0 8px 24px rgba(14,165,233,.4); }
+        .card-admin    .card-icon { background: linear-gradient(135deg, #7c3aed, #5b21b6); box-shadow: 0 8px 24px rgba(124,58,237,.4); }
+        .choice-card:hover .card-icon { transform: scale(1.12) rotate(-4deg); }
+
+        .card-title {
+            font-size: 1.15rem; font-weight: 800; letter-spacing: -0.4px;
+        }
+        .card-customer .card-title { color: #38bdf8; }
+        .card-admin    .card-title { color: #a78bfa; }
+
+        .card-desc { font-size: 13px; color: #64748b; text-align: center; line-height: 1.55; }
+
+        .card-btn {
+            margin-top: 8px; width: 100%; padding: 12px;
+            border: none; border-radius: 12px;
+            font-size: 14px; font-weight: 700; font-family: 'Inter', sans-serif;
+            cursor: pointer; letter-spacing: 0.2px;
+            transition: opacity .2s, transform .2s;
+        }
+        .card-customer .card-btn { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: #fff; box-shadow: 0 4px 14px rgba(14,165,233,.4); }
+        .card-admin    .card-btn { background: linear-gradient(135deg, #7c3aed, #5b21b6); color: #fff; box-shadow: 0 4px 14px rgba(124,58,237,.4); }
+        .card-btn:hover { opacity: .88; transform: translateY(-1px); }
+
+        /* ── Divider ── */
+        .or-divider {
+            position: relative; z-index: 1;
+            display: flex; align-items: center; justify-content: center;
+            margin: 36px 0 24px;
+            animation: fadeUp .6s .3s ease both;
+        }
+        .or-divider::before, .or-divider::after {
+            content: ''; flex: 1; height: 1px;
+            background: rgba(255,255,255,.06); max-width: 200px;
+        }
+        .or-divider span {
+            padding: 0 16px; font-size: 12px; font-weight: 600;
+            color: #334155; letter-spacing: 0.5px; text-transform: uppercase;
+        }
+
+        /* ── Register row ── */
+        .register-row {
+            display: flex; flex-direction: column; align-items: center; gap: 14px;
+            animation: fadeUp .6s .4s ease both;
+        }
+        .register-row p { font-size: 13px; color: #475569; }
+        .btn-register-main {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 13px 32px; border-radius: 14px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,.1);
+            color: #94a3b8; font-size: 14px; font-weight: 700;
+            font-family: 'Inter', sans-serif; cursor: pointer;
+            text-decoration: none;
+            transition: all .25s;
+        }
+        .btn-register-main:hover {
+            background: rgba(255,255,255,.05);
+            border-color: rgba(255,255,255,.2);
+            color: #f1f5f9; transform: translateY(-2px);
+        }
+
+        /* ── Footer ── */
+        .page-footer {
+            margin-top: 48px; text-align: center;
+            color: #1e293b; font-size: 12px;
+            animation: fadeUp .6s .5s ease both;
+        }
+        .page-footer a { color: #334155; text-decoration: none; }
+        .page-footer a:hover { color: #64748b; }
+
+        /* ── Back to shop link ── */
+        .back-shop {
+            position: relative; z-index: 1;
+            display: inline-flex; align-items: center; gap: 6px;
+            margin-top: 28px;
+            color: #334155; font-size: 13px; font-weight: 500;
+            text-decoration: none; transition: color .2s;
+            animation: fadeUp .6s .45s ease both;
+        }
+        .back-shop:hover { color: #64748b; }
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+
+    <div class="wrapper">
+
+        <!-- Brand -->
+        <div class="brand">
+            <div class="brand-icon">⚡</div>
+            <span class="brand-name">ShopEasy</span>
+        </div>
+
+        <!-- Heading -->
+        <div class="heading">
+            <h1>Welcome Back</h1>
+            <p>Choose how you'd like to sign in to your ShopEasy account today.</p>
+        </div>
+
+        <!-- Choice Cards -->
+        <div class="cards">
+
+            <!-- Customer -->
+            <a href="/login/customer" class="choice-card card-customer">
+                <div class="card-accent"></div>
+                <div class="card-icon">🛍️</div>
+                <div class="card-title">Customer</div>
+                <p class="card-desc">Browse products, manage your cart &amp; track your orders.</p>
+                <button class="card-btn">Sign In as Customer</button>
+            </a>
+
+        </div>
+
+        <!-- Register CTA -->
+        <div class="or-divider">
+            <span>New here?</span>
+        </div>
+
+        <div class="register-row">
+            <a href="/register" class="btn-register-main">
+                ✨ Create a Free Account
+            </a>
+        </div>
+
+        <!-- Back to shop -->
+        <a href="/" class="back-shop">← Back to Shop</a>
+
+        <!-- Footer -->
+        <div class="page-footer">
+            &copy; 2026 ShopEasy &nbsp;·&nbsp; <a href="/">Shop</a>
+        </div>
+
+    </div>
+
+</body>
+</html>

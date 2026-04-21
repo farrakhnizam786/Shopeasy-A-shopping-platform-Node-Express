@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopEasy | Order #<%= order.orderId %> Confirmed!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary:#ff6b35; --primary-dark:#e55a25; --success:#22c55e; --bg:#f0f4f8; --white:#fff; --border:#e5e7eb; --text:#111827; --text-muted:#6b7280; --text-faint:#9ca3af; --shadow:0 4px 20px rgba(0,0,0,.08); }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 36px 16px 80px; }
+        .success-banner { max-width: 720px; margin: 0 auto 24px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 20px; padding: 28px; text-align: center; color: #fff; position: relative; overflow: hidden; }
+        .success-banner::before { content:''; position:absolute; inset:0; background:url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Ccircle cx='20' cy='20' r='10'/%3E%3C/g%3E%3C/svg%3E"); }
+        .success-icon { font-size: 2.6rem; margin-bottom: 10px; position: relative; z-index: 1; animation: pop .5s cubic-bezier(.22,1,.36,1); }
+        @keyframes pop { from{transform:scale(0)} to{transform:scale(1)} }
+        .success-banner h1 { font-size: 1.5rem; font-weight: 900; margin-bottom: 6px; position: relative; z-index: 1; }
+        .success-banner p { font-size: .88rem; opacity: .9; position: relative; z-index: 1; }
+        .order-id { display: inline-block; margin-top: 10px; background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.35); padding: 4px 16px; border-radius: 100px; font-size: 13px; font-weight: 700; position: relative; z-index: 1; }
+        .invoice { max-width: 720px; margin: 0 auto; background: var(--white); border-radius: 20px; box-shadow: var(--shadow); overflow: hidden; }
+        .inv-head { padding: 22px 26px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; background: linear-gradient(135deg, #fff7f4, #fff); }
+        .inv-shop-name { font-size: 1.3rem; font-weight: 900; color: var(--primary); }
+        .inv-shop-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+        .inv-shop-contact { font-size: 11.5px; color: var(--text-faint); margin-top: 6px; line-height: 1.6; }
+        .inv-meta { text-align: right; }
+        .inv-label { font-size: 11px; color: var(--text-faint); text-transform: uppercase; letter-spacing:.5px; }
+        .inv-value { font-size: 13px; font-weight: 700; margin-top: 2px; }
+        .inv-status { margin-top: 6px; display: inline-block; padding: 4px 12px; border-radius: 100px; background: rgba(34,197,94,.12); color: #15803d; border: 1px solid rgba(34,197,94,.25); font-size: 11.5px; font-weight: 700; }
+        .inv-info-grid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--border); }
+        .inv-info-box { padding: 18px 26px; }
+        .inv-info-box:first-child { border-right: 1px solid var(--border); }
+        .iib-title { font-size: 11px; font-weight: 800; color: var(--text-faint); text-transform: uppercase; letter-spacing:.5px; margin-bottom: 10px; }
+        .iib-name { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+        .iib-line { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+        .pm-badge { display: inline-flex; align-items: center; gap: 6px; background: #f8f9fa; border: 1px solid var(--border); padding: 8px 14px; border-radius: 10px; font-size: 13px; font-weight: 700; }
+        .status-badge { display: inline-block; padding: 5px 14px; border-radius: 100px; font-size: 12px; font-weight: 700; }
+        .s-pending     { background: rgba(245,158,11,.12); color: #b45309; border: 1px solid rgba(245,158,11,.25); }
+        .s-process     { background: rgba(59,130,246,.12); color: #1d4ed8; border: 1px solid rgba(59,130,246,.25); }
+        .s-delivery    { background: rgba(139,92,246,.12); color: #6d28d9; border: 1px solid rgba(139,92,246,.25); }
+        .s-delivered   { background: rgba(34,197,94,.12); color: #15803d; border: 1px solid rgba(34,197,94,.25); }
+        .s-cancelled   { background: rgba(239,68,68,.12); color: #b91c1c; border: 1px solid rgba(239,68,68,.25); }
+        .inv-items { padding: 20px 26px; border-bottom: 1px solid var(--border); }
+        .item-table { width: 100%; border-collapse: collapse; }
+        .item-table th { font-size: 11px; font-weight: 800; color: var(--text-faint); text-transform: uppercase; letter-spacing:.4px; padding: 8px 10px; border-bottom: 2px solid var(--border); text-align: left; }
+        .item-table th:last-child { text-align: right; }
+        .item-table td { padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 13.5px; vertical-align: middle; }
+        .item-table tr:last-child td { border-bottom: none; }
+        .item-table td:last-child { text-align: right; font-weight: 700; color: var(--primary); }
+        .item-img { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; background: #f8f9fa; }
+        .item-name-cell { display: flex; align-items: center; gap: 10px; }
+        .inv-totals { padding: 20px 26px; }
+        .t-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; }
+        .t-row span:first-child { font-size: 13.5px; color: var(--text-muted); }
+        .t-row span:last-child { font-size: 14px; font-weight: 700; }
+        .t-row.free span:last-child { color: var(--success); }
+        .t-row.grand { border-top: 2px dashed var(--border); margin-top: 8px; padding-top: 14px; }
+        .t-row.grand span:first-child { font-size: 16px; font-weight: 800; }
+        .t-row.grand span:last-child { font-size: 1.5rem; font-weight: 900; color: var(--primary); }
+        .paid-stamp { display: inline-block; margin-top: 10px; padding: 5px 14px; border-radius: 8px; border: 2px solid var(--success); color: var(--success); font-size: 13px; font-weight: 800; letter-spacing: 1px; transform: rotate(-2deg); }
+        .inv-policy { margin: 0 26px 18px; background: #fff7f0; border: 1px solid #fed7aa; border-radius: 14px; padding: 14px 18px; }
+        .policy-title { font-size: 12px; font-weight: 800; color: #c2410c; margin-bottom: 6px; }
+        .policy-text { font-size: 12px; color: #7c3d12; line-height: 1.7; }
+        .inv-footer { padding: 14px 26px; background: #f8f9fa; border-top: 1px solid var(--border); text-align: center; font-size: 12px; color: var(--text-faint); line-height: 1.8; }
+        .cta-row { max-width: 720px; margin: 20px auto 0; display: flex; gap: 12px; }
+        .cta-btn { flex: 1; padding: 14px; border-radius: 14px; font-size: .9rem; font-weight: 700; font-family: inherit; cursor: pointer; text-decoration: none; text-align: center; transition: .2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .cta-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; border: none; box-shadow: 0 4px 16px rgba(255,107,53,.3); }
+        .cta-primary:hover { transform: translateY(-2px); }
+        .cta-outline { background: #fff; color: var(--text); border: 1.5px solid var(--border); }
+        .cta-outline:hover { border-color: var(--primary); color: var(--primary); }
+        @media(max-width:600px){ .inv-head{flex-direction:column;gap:16px} .inv-meta{text-align:left} .inv-info-grid{grid-template-columns:1fr} .inv-info-box:first-child{border-right:none;border-bottom:1px solid var(--border)} .cta-row{flex-direction:column} }
+        @media print { body{background:#fff;padding:0} .success-banner,.cta-row{display:none} .invoice{box-shadow:none;border-radius:0} }
+    </style>
+</head>
+<body>
+
+<div class="success-banner">
+    <div class="success-icon">✅</div>
+    <h1>Order Confirmed!</h1>
+    <p>Thank you for shopping at ShopEasy. Your order is being processed.</p>
+    <div class="order-id">Order #<%= order.orderId %></div>
+</div>
+
+<div class="invoice">
+    <!-- Shop Header -->
+    <div class="inv-head">
+        <div>
+            <div class="inv-shop-name">🛍️ ShopEasy</div>
+            <div class="inv-shop-sub">Premium Online Shopping — India's Favourite Store</div>
+            <div class="inv-shop-contact">
+                📍 Plot 42, Commerce Park, Bandra East, Mumbai – 400051<br>
+                📞 +91 98765 43210 &nbsp;|&nbsp; ✉️ support@shopeasy.in<br>
+                🌐 www.shopeasy.in &nbsp;|&nbsp; GSTIN: 27ABCDE1234F1Z5
+            </div>
+        </div>
+        <div class="inv-meta">
+            <div class="inv-label">Invoice No.</div>
+            <div class="inv-value"><%= order.invoiceNum %></div>
+            <div class="inv-label" style="margin-top:10px;">Date</div>
+            <div class="inv-value"><%= new Date(order.createdAt).toLocaleDateString('en-IN', {day:'2-digit',month:'long',year:'numeric'}) %></div>
+            <div class="inv-label" style="margin-top:10px;">Status</div>
+            <%
+                var statusClass = { 'Pending':'s-pending','In Process':'s-process','Out for Delivery':'s-delivery','Delivered':'s-delivered','Cancelled':'s-cancelled' };
+            %>
+            <div class="status-badge <%= statusClass[order.status] || 's-pending' %>"><%= order.status %></div>
+        </div>
+    </div>
+
+    <!-- Delivery + Payment -->
+    <div class="inv-info-grid">
+        <div class="inv-info-box">
+            <div class="iib-title">📍 Deliver To</div>
+            <div class="iib-name"><%= order.address.name %></div>
+            <div class="iib-line"><%= [order.address.street, order.address.landmark, order.address.city, order.address.state, order.address.pin].filter(Boolean).join(', ') %></div>
+            <div class="iib-line">📞 <%= order.address.phone %></div>
+            <div class="iib-line">✉️ <%= order.address.email %></div>
+        </div>
+        <div class="inv-info-box">
+            <div class="iib-title">💳 Payment</div>
+            <div class="pm-badge">
+                <% var pmIcons = {upi:'📱 UPI', card:'💳 Card', wallet:'👛 Wallet', cod:'💵 Cash on Delivery'}; %>
+                <%= pmIcons[order.payment] || order.payment %>
+            </div>
+            <div class="iib-line" style="margin-top:12px;">
+                <strong>Est. Delivery:</strong><br>
+                <span style="color:#16a34a;font-weight:700;">
+                    <%
+                        var eta1 = new Date(order.createdAt); eta1.setDate(eta1.getDate()+4);
+                        var eta2 = new Date(order.createdAt); eta2.setDate(eta2.getDate()+7);
+                    %>
+                    <%= eta1.toLocaleDateString('en-IN',{day:'2-digit',month:'long'}) %> – <%= eta2.toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}) %>
+                </span>
+            </div>
+            <div class="iib-line" style="margin-top:6px;font-size:11px;">Shipped via ShopEasy Express 🚀</div>
+        </div>
+    </div>
+
+    <!-- Items -->
+    <div class="inv-items">
+        <table class="item-table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th style="text-align:center;">Qty</th>
+                    <th style="text-align:right;">Unit Price</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% order.items.forEach(function(item){ %>
+                <tr>
+                    <td>
+                        <div class="item-name-cell">
+                            <img class="item-img" src="<%= item.img||'https://placehold.co/36x36/f0f4f8/ff6b35?text=P' %>" onerror="this.src='https://placehold.co/36x36/f0f4f8/ff6b35?text=P'" alt="">
+                            <%= item.name %>
+                        </div>
+                    </td>
+                    <td style="text-align:center;"><%= item.qty %></td>
+                    <td style="text-align:right;">₹<%= Number(item.price).toLocaleString('en-IN') %></td>
+                    <td>₹<%= Number(item.price * item.qty).toLocaleString('en-IN') %></td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Totals -->
+    <div class="inv-totals">
+        <div class="t-row"><span>Subtotal</span><span>₹<%= Number(order.subtotal).toLocaleString('en-IN') %></span></div>
+        <div class="t-row free"><span>🚚 Delivery Charges</span><span>FREE</span></div>
+        <div class="t-row"><span>GST (18%)</span><span>₹<%= Number(order.gst).toLocaleString('en-IN') %></span></div>
+        <div class="t-row grand"><span>Grand Total</span><span>₹<%= Number(order.total).toLocaleString('en-IN') %></span></div>
+        <% if (order.payment !== 'cod') { %>
+        <div class="paid-stamp">✓ PAID</div>
+        <% } %>
+    </div>
+
+    <!-- Policy -->
+    <div class="inv-policy">
+        <div class="policy-title">📋 Return & Refund Policy</div>
+        <div class="policy-text">
+            • <strong>7-Day Easy Returns:</strong> Return any product within 7 days for a full refund — no questions asked.<br>
+            • <strong>Damaged/Wrong Item:</strong> Contact us within 48 hours for immediate replacement or refund.<br>
+            • <strong>Refund Timeline:</strong> Processed within 5–7 business days to your original payment method.<br>
+            • <strong>Non-Returnable:</strong> Perishable items (Food & Drinks), unsealed Beauty products, digital items.<br>
+            • <strong>Contact:</strong> support@shopeasy.in | +91 98765 43210 (Mon–Sat, 9AM–8PM IST)
+        </div>
+    </div>
+
+    <div class="inv-footer">
+        <strong>Thank you for shopping with ShopEasy! 🎉</strong><br>
+        Computer-generated invoice. No signature required. &nbsp;|&nbsp; CIN: U74999MH2024PTC000001
+    </div>
+</div>
+
+<div class="cta-row">
+    <button class="cta-btn cta-outline" onclick="window.print()">🖨️ Print Invoice</button>
+    <a href="/my-account" class="cta-btn cta-outline">📦 My Orders</a>
+    <a href="/" class="cta-btn cta-primary">🛍️ Continue Shopping</a>
+</div>
+
+</body>
+</html>
